@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduQuiz - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: linear-gradient(to bottom, #013220, #025d37);
+      color: white;
+    }
+    header {
+      background: #012e20;
+      padding: 1rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-links a:hover {
+      color: #00f7ff;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    .profile img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .home-content {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .deck-card {
+      background: #14452f;
+      padding: 1rem;
+      border-radius: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .deck-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .deck-card h4 {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+    .deck-card small {
+      color: #bbb;
+      font-size: 0.875rem;
+    }
+    .highlight-card {
+      grid-column: span 2;
+      background: #1b513a;
+    }
+    @media (max-width: 480px) {
+      .highlight-card {
+        grid-column: span 1;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: center;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .profile {
+        margin-left: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">EduQuiz</div>
+
+  </header>
+  <main class="home-content">
+    <section class="card-grid">
+      <div class="deck-card highlight-card" data-clickable="true" onclick="alert('Opening ICT Quiz...')">
+        <h4>This interactive quiz will test your knowledge as an ICT Student.</h4>
+        <small>ICT • SHS</small>
+      </div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='english.html'"><h4>English</h4><small>30 Questions • 30 min</small></div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='math.html'"><h4>Math</h4><small>30 Questions • 30 min</small></div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='science.html'"><h4>Science</h4><small>30 Questions • 30 min</small></div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='filipino.html'"><h4>Filipino</h4><small>30 Questions • 35 min</small></div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='pe.html'"><h4>PE</h4><small>30 Questions • 30 min</small></div>
+      <div class="deck-card" data-clickable="true" onclick="location.href='ict.html'"><h4>ICT</h4><small>30 Questions • 30 min</small></div>
+    </section>
+  </main>
+</body>
+</html>

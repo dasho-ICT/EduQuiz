@@ -1,0 +1,169 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Writing Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f8f1e4;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .options label {
+      background-color: #e6d3b3;
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      border-radius: 5px;
+      font-weight: normal;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options input[type="radio"]:checked + label {
+      transform: translateY(-4px);
+      background-color: #d4b78c;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+    #resultBox {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 5px;
+      padding: 20px;
+      display: none;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Writing in ICT Quiz</h2>
+  <div id="timer">Time Remaining: 30:00</div>
+  <form id="quizForm"></form>
+  <div id="resultBox"></div>
+  <script> 
+    const questions = [
+  ["What is the basic unit of life?", ["Atom", "Cell", "Tissue", "Organ"], "B"],
+  ["Which organelle is known as the \"powerhouse of the cell\"?", ["Nucleus", "Ribosome", "Mitochondrion", "Golgi apparatus"], "C"],
+  ["Which law states that for every action, there is an equal and opposite reaction?", ["Law of Inertia", "Law of Acceleration", "Newton’s Third Law", "Conservation of Energy"], "C"],
+  ["What is the pH of a neutral solution?", ["0", "7", "14", "1"], "B"],
+  ["What type of bond involves the sharing of electrons?", ["Ionic bond", "Metallic bond", "Hydrogen bond", "Covalent bond"], "D"],
+  ["Which planet is known as the “Red Planet”?", ["Venus", "Jupiter", "Mars", "Mercury"], "C"],
+  ["What is the formula for acceleration?", ["Force / Mass", "Distance × Time", "Mass × Gravity", "Velocity / Time"], "D"],
+  ["Which gas is most abundant in Earth's atmosphere?", ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"], "C"],
+  ["What is the primary function of red blood cells?", ["Fight infection", "Clot blood", "Transport oxygen", "Produce hormones"], "C"],
+  ["Which type of volcano has gentle slopes and erupts basaltic lava?", ["Composite", "Stratovolcano", "Shield volcano", "Cinder cone"], "C"],
+  ["What type of reaction occurs when an acid reacts with a base?", ["Combustion", "Decomposition", "Neutralization", "Precipitation"], "C"],
+  ["Which part of the brain controls balance and coordination?", ["Cerebrum", "Brain stem", "Cerebellum", "Hypothalamus"], "C"],
+  ["What is the main source of energy for the water cycle?", ["Moon", "Ocean currents", "Earth's core", "Sun"], "D"],
+  ["Which macromolecule is primarily responsible for storing genetic information?", ["Lipids", "Proteins", "Nucleic acids", "Carbohydrates"], "C"],
+  ["Which subatomic particle has a negative charge?", ["Proton", "Neutron", "Electron", "Ion"], "C"],
+  ["What process do plants use to convert sunlight into energy?", ["Respiration", "Photosynthesis", "Fermentation", "Digestion"], "B"],
+  ["Which layer of the Earth is liquid?", ["Crust", "Inner core", "Mantle", "Outer core"], "D"],
+  ["What is the chemical formula for table salt?", ["NaCl", "H2O", "CO2", "CH4"], "A"],
+  ["Which organ filters waste from the blood?", ["Liver", "Heart", "Kidney", "Lungs"], "C"],
+  ["What unit is used to measure force?", ["Watt", "Newton", "Pascal", "Joule"], "B"],
+  ["What is the term for the amount of matter in an object?", ["Volume", "Density", "Weight", "Mass"], "D"],
+  ["Which blood type is considered the universal donor?", ["A", "B", "AB", "O"], "D"],
+  ["What do we call the smallest particle of an element that retains its identity?", ["Ion", "Molecule", "Atom", "Proton"], "C"],
+  ["What causes tides on Earth?", ["Sunlight", "Gravitational pull of the moon", "Ocean currents", "Wind"], "B"],
+  ["Which phase of the moon is completely illuminated?", ["New moon", "Full moon", "First quarter", "Waning crescent"], "B"],
+  ["What is the boiling point of water at standard atmospheric pressure?", ["0°C", "50°C", "100°C", "120°C"], "C"],
+  ["Which of the following is a renewable source of energy?", ["Coal", "Oil", "Natural gas", "Solar power"], "D"],
+  ["What does DNA stand for?", ["Dynamic Nuclear Acid", "Deoxyribonucleic Acid", "Dual Nucleus Atom", "Deoxynuclear Acid"], "B"],
+  ["Which scientist is famous for developing the theory of relativity?", ["Isaac Newton", "Albert Einstein", "Marie Curie", "Galileo Galilei"], "B"],
+  ["Which of the following diseases is caused by a virus?", ["Tuberculosis", "Malaria", "Dengue", "Ringworm"], "C"]
+];
+
+     const form = document.getElementById("quizForm");
+    const resultBox = document.getElementById("resultBox");
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.innerHTML = `<label>${index + 1}. ${q[0]}</label>`;
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      ["A", "B", "C", "D"].forEach((letter, i) => {
+        const id = `q${index + 1}${letter}`;
+        const name = `q${index + 1}`;
+        optionsDiv.innerHTML += `<input type="radio" id="${id}" name="${name}" value="${letter}"><label for="${id}">${letter}. ${q[1][i]}</label>`;
+      });
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit Quiz";
+    submitBtn.type = "button";
+    submitBtn.onclick = () => {
+      let score = 0;
+      const timeUsed = 1800 - totalTime;
+      const minutesUsed = Math.floor(timeUsed / 60);
+      const secondsUsed = timeUsed % 60;
+      const formattedTime = `${String(minutesUsed).padStart(2, '0')}:${String(secondsUsed).padStart(2, '0')}`;
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+        if (selected && selected.value === q[2]) score++;
+      });
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `Time Used: ${formattedTime}<br>You got ${score} out of ${questions.length} correct.<br><br><button onclick=\"window.location.href='EduQuiz.html'\">Go Back</button>`;
+      
+    };
+    form.appendChild(submitBtn);
+
+    let totalTime = 30 * 60;
+    const timerDisplay = document.getElementById("timer");
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timerDisplay.textContent = `Time Remaining: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      totalTime--;
+      if (totalTime < 0) {
+        clearInterval(countdown);
+        alert("Time's up! Submitting your quiz.");
+        submitBtn.click();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

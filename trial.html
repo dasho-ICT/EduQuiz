@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Writing Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f8f1e4;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .options label {
+      background-color: #e6d3b3;
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      border-radius: 5px;
+      font-weight: normal;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options input[type="radio"]:checked + label {
+      transform: translateY(-4px);
+      background-color: #d4b78c;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Writing in ICT Quiz</h2>
+  <form id="quizForm"></form>
+  <script>
+    const questions = [
+      ["Which of the following is an example of technical writing?", ["A love poem", "A short story", "A user manual", "A comic strip"], "C"],
+      ["What is the main goal of technical writing in ICT?", ["To entertain", "To express emotions", "To persuade", "To inform clearly"], "D"],
+      ["What section of a project proposal outlines what the project aims to achieve?", ["Objectives", "Budget", "Team profile", "Schedule"], "A"],
+      ["Which of the following is used for professional communication in ICT?", ["Social media post", "Personal letter", "Business email", "Diary entry"], "C"],
+      ["What should be avoided in technical writing?", ["Clear ideas", "Jargon", "Concise points", "Objective tone"], "B"],
+      ["What does an executive summary contain?", ["Technical codes", "Full data sets", "Main points of the document", "Informal language"], "C"],
+      ["Which one best describes a résumé?", ["A fictional story", "A list of achievements and work experience", "A product brochure", "A personal diary"], "B"],
+      ["Why is proofreading important in technical writing?", ["To add jokes", "To lengthen the report", "To remove errors", "To make it more poetic"], "C"],
+      ["What is the tone of formal writing?", ["Humorous", "Slang-filled", "Polite and professional", "Casual and relaxed"], "C"],
+      ["Which of these parts is commonly found in a technical report?", ["Plot twist", "Conclusion", "Dialogue", "Cliffhanger"], "B"],
+      ["What is the purpose of a manual?", ["To narrate a story", "To instruct users", "To advertise a product", "To argue a point"], "B"],
+      ["What does ‘ICT’ stand for?", ["Internet and Coding Technology", "International Computing Terms", "Information and Communication Technology", "Interactive Cyber Tools"], "C"],
+      ["What makes a good email subject line?", ["Random words", "Long and vague", "Clear and relevant", "ALL CAPS"], "C"],
+      ["Which of the following helps make instructions clearer?", ["Fancy words", "Technical jargon", "Lists and bullet points", "Long paragraphs"], "C"],
+      ["What kind of language is best used in a project proposal?", ["Emotional", "Informal", "Persuasive", "Formal and objective"], "D"],
+      ["Which part of an email includes your message?", ["Subject line", "Header", "Body", "Attachment"], "C"],
+      ["When writing a business letter, what should you include?", ["Hashtags", "Emoticons", "Slang terms", "Proper greetings"], "D"],
+      ["Which of these is considered a visual aid in technical writing?", ["Infographic", "Joke", "Metaphor", "Dialogue"], "A"],
+      ["What should a technical report be based on?", ["Emotions", "Assumptions", "Verified data", "Gossip"], "C"],
+      ["What is the purpose of writing a system documentation?", ["To teach painting", "To explain how a system works", "To write about your day", "To share opinions"], "B"],
+      ["What makes communication effective in ICT?", ["Slang", "Emojis", "Clarity", "Vague terms"], "C"],
+      ["Why should slang be avoided in formal writing?", ["It makes writing easier", "It impresses teachers", "It confuses readers", "It’s more exciting"], "C"],
+      ["Which of the following is used to list qualifications and skills?", ["Résumé", "Poem", "Novel", "Script"], "A"],
+      ["What should be included in a project proposal?", ["Fictional story", "Game rules", "Goals and timelines", "Personal rants"], "C"],
+      ["What kind of tone should you use in technical documents?", ["Humorous", "Formal", "Angry", "Casual"], "B"],
+      ["In technical writing, which is most important?", ["Style and flair", "Being creative", "Clarity and accuracy", "Drama"], "C"],
+      ["When is it best to use graphics in reports?", ["To make it longer", "When they help explain data", "Only at the beginning", "To decorate the page"], "B"],
+      ["Why is feedback important when writing documents?", ["To argue", "To fight ideas", "To improve content", "To waste time"], "C"],
+      ["What should be the first step before writing any document?", ["Start typing", "Skip planning", "Identify the purpose", "Think of jokes"], "C"],
+      ["What is the correct tone for a message to a teacher or supervisor?", ["Friendly but formal", "Rude", "Flirty", "Overly casual"], "A"]
+    ];
+
+    const form = document.getElementById("quizForm");
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.innerHTML = `<label>${index + 1}. ${q[0]}</label>`;
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      ["A", "B", "C", "D"].forEach((letter, i) => {
+        const id = `q${index + 1}${letter}`;
+        const name = `q${index + 1}`;
+        optionsDiv.innerHTML += `<input type="radio" id="${id}" name="${name}" value="${letter}"><label for="${id}">${letter}. ${q[1][i]}</label>`;
+      });
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit Quiz";
+    submitBtn.type = "button";
+    submitBtn.onclick = () => {
+      let score = 0;
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+        if (selected && selected.value === q[2]) score++;
+      });
+      alert(`You got ${score} out of ${questions.length} correct.`);
+    };
+    form.appendChild(submitBtn);
+  </script>
+</body>
+</html>

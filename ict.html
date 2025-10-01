@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Writing Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f8f1e4;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .options label {
+      background-color: #e6d3b3;
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      border-radius: 5px;
+      font-weight: normal;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options input[type="radio"]:checked + label {
+      transform: translateY(-4px);
+      background-color: #d4b78c;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+    #resultBox {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 5px;
+      padding: 20px;
+      display: none;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Writing in ICT Quiz</h2>
+  <div id="timer">Time Remaining: 30:00</div>
+  <form id="quizForm"></form>
+  <div id="resultBox"></div>
+  <script> 
+
+    const questions = [
+      ["What does CSS stand for in the TLE strand?", ["Computer Software and Systems", "Computer Systems Servicing", "Computer Safety Standards", "Central Service Setup"], "B"],
+      ["What tool is used to test the voltage of a power supply?", ["Soldering iron", "LAN tester", "Multimeter", "Screwdriver"], "C"],
+      ["Which component is responsible for processing data in a computer?", ["RAM", "Power supply", "CPU", "Hard drive"], "C"],
+      ["What device is used to cool down the CPU?", ["Speaker", "Heat sink with fan", "Monitor", "UPS"], "B"],
+      ["Which of the following is a storage device?", ["Printer", "USB flash drive", "Mouse", "Scanner"], "B"],
+      ["What should you do before opening a system unit?", ["Plug in the computer", "Wash your hands", "Turn off and unplug the unit", "Install software"], "C"],
+      ["What command opens the Run dialog in Windows?", ["Ctrl + R", "Alt + R", "Win + R", "Shift + R"], "C"],
+      ["Which component provides power to all parts of a computer?", ["RAM", "Motherboard", "Power Supply Unit (PSU)", "Hard disk"], "C"],
+      ["What is the safest way to remove a USB flash drive?", ["Pull it out immediately", "Use 'Safely Remove Hardware'", "Turn off the PC", "Eject it from Task Manager"], "B"],
+      ["Which type of cable is commonly used in LAN networks?", ["HDMI", "Coaxial", "VGA", "UTP"], "D"],
+      ["What color wire in a standard power cord is for grounding?", ["Red", "Black", "Green", "Blue"], "C"],
+      ["What is the first step in troubleshooting a computer that won’t turn on?", ["Reinstall the OS", "Replace the CPU", "Check the power supply", "Change the monitor"], "C"],
+      ["What software is used to check for viruses?", ["MS Paint", "Antivirus", "Notepad", "Disk Cleanup"], "B"],
+      ["Which of the following is an input device?", ["Monitor", "Speaker", "Keyboard", "Printer"], "C"],
+      ["What tool is used to attach components to a circuit board?", ["LAN tester", "Multimeter", "Crimping tool", "Soldering iron"], "D"],
+      ["What is the purpose of a UPS?", ["Increase internet speed", "Store large files", "Provide backup power", "Connect printers"], "C"],
+      ["What type of software is Windows 10?", ["Application software", "Utility software", "Operating system", "Programming software"], "C"],
+      ["Which command lets you view network settings in Command Prompt?", ["ipconfig", "dir", "format", "ping"], "A"],
+      ["What is the standard length limit of a UTP cable for Ethernet?", ["50 meters", "75 meters", "100 meters", "200 meters"], "C"],
+      ["What does HTTP stand for?", ["Hyper Terminal Transfer Protocol", "Hypertext Transfer Protocol", "High Transfer Text Program", "Hyperlink Transfer Terminal Protocol"], "B"],
+      ["What is the main function of a NIC?", ["Process video", "Manage power supply", "Connect to network", "Display output"], "C"],
+      ["What is a common symptom of a failing hard drive?", ["Bright screen", "Slow performance and clicking sounds", "Fast internet", "Printer not responding"], "B"],
+      ["Which safety gear is used to prevent static discharge?", ["Gloves", "Goggles", "ESD wrist strap", "Headset"], "C"],
+      ["What is the extension of an executable file in Windows?", [".jpg", ".txt", ".exe", ".doc"], "C"],
+      ["What is the meaning of BIOS?", ["Basic Internal Operating System", "Basic Input Output System", "Binary Integrated Output Software", "Built-in Operating Source"], "B"],
+      ["What is the most important step before installing any software?", ["Read the manual", "Backup files", "Watch a tutorial", "Check screen resolution"], "B"],
+      ["What is a default IP address commonly used by routers?", ["192.168.1.1", "10.0.0.1", "172.16.0.1", "255.255.255.0"], "A"],
+      ["Which Windows tool is used for partitioning hard drives?", ["Task Manager", "Device Manager", "Disk Management", "Control Panel"], "C"],
+      ["What is the purpose of a crimping tool?", ["Cut wires", "Remove screws", "Test voltage", "Attach RJ45 connectors"], "D"],
+      ["What is the function of a motherboard?", ["Store user data", "Connect hardware components", "Output sound", "Increase RAM size"], "B"]
+    ];
+
+    const form = document.getElementById("quizForm");
+    const resultBox = document.getElementById("resultBox");
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.innerHTML = `<label>${index + 1}. ${q[0]}</label>`;
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      ["A", "B", "C", "D"].forEach((letter, i) => {
+        const id = `q${index + 1}${letter}`;
+        const name = `q${index + 1}`;
+        optionsDiv.innerHTML += `<input type="radio" id="${id}" name="${name}" value="${letter}"><label for="${id}">${letter}. ${q[1][i]}</label>`;
+      });
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit Quiz";
+    submitBtn.type = "button";
+    submitBtn.onclick = () => {
+      let score = 0;
+      const timeUsed = 1800 - totalTime;
+      const minutesUsed = Math.floor(timeUsed / 60);
+      const secondsUsed = timeUsed % 60;
+      const formattedTime = `${String(minutesUsed).padStart(2, '0')}:${String(secondsUsed).padStart(2, '0')}`;
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+        if (selected && selected.value === q[2]) score++;
+      });
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `Time Used: ${formattedTime}<br>You got ${score} out of ${questions.length} correct.<br><br><button onclick=\"window.location.href='EduQuiz.html'\">Go Back</button>`;
+      
+    };
+    form.appendChild(submitBtn);
+
+    let totalTime = 30 * 60;
+    const timerDisplay = document.getElementById("timer");
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timerDisplay.textContent = `Time Remaining: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      totalTime--;
+      if (totalTime < 0) {
+        clearInterval(countdown);
+        alert("Time's up! Submitting your quiz.");
+        submitBtn.click();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

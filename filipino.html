@@ -1,0 +1,170 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Writing Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f8f1e4;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .options label {
+      background-color: #e6d3b3;
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      border-radius: 5px;
+      font-weight: normal;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options input[type="radio"]:checked + label {
+      transform: translateY(-4px);
+      background-color: #d4b78c;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+    #resultBox {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 5px;
+      padding: 20px;
+      display: none;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Writing in ICT Quiz</h2>
+  <div id="timer">Time Remaining: 30:00</div>
+  <form id="quizForm"></form>
+  <div id="resultBox"></div>
+  <script> 
+    
+    const questions = [
+  ["Ano ang tawag sa pag-aaral ng mga tunog ng wika?", ["Semantika", "Morpolohiya", "Ponolohiya", "Sintaksis"], "C"],
+  ["Alin sa mga sumusunod ang halimbawa ng *di-pormal* na wika?", ["Lalawiganin", "Teknikal", "Akademiko", "Pampanitikan"], "A"],
+  ["Ano ang pangunahing layunin ng retorika?", ["Magsulat ng tula", "Mang-aliw ng mambabasa", "Makapagsalita nang masining at epektibo", "Makagawa ng dula"], "C"],
+  ["Alin sa mga sumusunod ang *pang-abay*?", ["Tumakbo", "Mabagal", "Maganda", "Gabi"], "B"],
+  ["Ano ang tawag sa masining na pagpapahayag ng ideya gamit ang tayutay?", ["Balagtasan", "Retorika", "Pagsasalaysay", "Pagtalakay"], "B"],
+  ["Ang “Ako ang Daigdig” ay halimbawa ng anong uri ng akda?", ["Maikling kwento", "Dula", "Sanaysay", "Tula"], "D"],
+  ["Ano ang ibig sabihin ng *wika*?", ["Isang paraan ng pagsasayaw", "Paraan ng pakikipagtalastasan", "Uri ng kasuotan", "Gamit sa pagluluto"], "B"],
+  ["Alin sa mga sumusunod ang HINDI kabilang sa antas ng wika?", ["Balbal", "Kolokyal", "Teknikal", "Wikang banyaga"], "D"],
+  ["Ano ang tawag sa pagsasalin ng ideya mula sa isang wika tungo sa iba?", ["Pagsasalinwika", "Pagsasaka", "Paglalapat", "Pag-aanalisa"], "A"],
+  ["Ano ang pangunahing gamit ng *panlapi*?", ["Nagbibigay ng kulay", "Nagpapaganda ng pangungusap", "Nagpapabago ng kahulugan ng salitang-ugat", "Nagpapakilala ng tauhan"], "C"],
+  ["Alin sa mga sumusunod ang halimbawang *payak na pangungusap*?", ["Si Ana ay maganda at matalino.", "Kumain si Juan ng mangga.", "Naghugas ng pinggan si Maria habang nagluluto si Ana.", "Umalis siya ngunit bumalik din."], "B"],
+  ["Ano ang pangunahing layunin ng *panitikan*?", ["Mang-aliw lamang", "Magbigay ng impormasyon", "Ipahayag ang damdamin, kaisipan, at karanasan ng tao", "Magbenta ng produkto"], "C"],
+  ["Alin sa mga sumusunod ang isang uri ng *panlaping makadiwa*?", ["-an", "-in", "-um", "-a"], "C"],
+  ["Ano ang tawag sa pagsasalaysay ng isang pangyayari ayon sa pagkakasunod-sunod?", ["Pagsusuri", "Pangangatwiran", "Paglalarawan", "Kronolohikal na pagsasalaysay"], "D"],
+  ["Alin sa mga sumusunod ang HINDI isang tayutay?", ["Pagwawangis", "Pagmamalabis", "Pagpapalawak", "Pagpapalit-tawag"], "C"],
+  ["Anong bahagi ng pananalita ang salitang “maganda”?", ["Pangngalan", "Pang-uri", "Pang-abay", "Pandiwa"], "B"],
+  ["Ano ang *pabula*?", ["Kwento ng kababalaghan", "Kwento ng hayop na may aral", "Kwento ng kabataan", "Kwento ng pag-ibig"], "B"],
+  ["Alin ang tamang baybay ng salitang Ingles na \"psychology\" sa Filipino?", ["Saykoloji", "Sikolohiya", "Saykology", "Saikolohiya"], "B"],
+  ["Ang “Florante at Laura” ay sinulat ni:", ["Jose Rizal", "Lope K. Santos", "Francisco Balagtas", "Amado V. Hernandez"], "C"],
+  ["Ano ang tawag sa pinakamaliit na yunit ng tunog?", ["Salita", "Ponema", "Pantig", "Abakada"], "B"],
+  ["Ano ang pangunahing layunin ng komunikasyon?", ["Magpakita ng emosyon", "Makipagtalastasan at maipahayag ang iniisip", "Magpatawa", "Magturo ng awit"], "B"],
+  ["Ano ang tawag sa pagsasalita sa harap ng madla?", ["Pakikipagchat", "Pagbigkas", "Pakikipanayam", "Talumpati"], "D"],
+  ["Alin sa mga sumusunod ang gamit ng pangatnig?", ["Nagtutukoy ng damdamin", "Nag-uugnay ng salita o kaisipan", "Nagbibigay kulay sa kwento", "Nagpapahiwatig ng kilos"], "B"],
+  ["Ang paggamit ng mga salitang “eka nga,” “kumbaga,” at “parang” ay halimbawa ng:", ["Kolokyal", "Pampanitikan", "Lalawiganin", "Pambansa"], "A"],
+  ["Anong bahagi ng pananalita ang nagsasaad ng kilos?", ["Pangngalan", "Pang-abay", "Pandiwa", "Panghalip"], "C"],
+  ["Alin sa mga sumusunod ang tumutukoy sa pagsasaayos ng pangungusap?", ["Ponolohiya", "Morpolohiya", "Sintaksis", "Pragmatiks"], "C"],
+  ["Anong uri ng dula ang nagbibigay ng mabigat na damdamin?", ["Komedya", "Trahedya", "Melodrama", "Parodya"], "B"],
+  ["Sa komunikasyong berbal, alin ang pangunahing kasangkapan?", ["Kamay", "Katawan", "Wika", "Mukha"], "C"],
+  ["Ano ang tawag sa pagsasabi ng kabaligtaran ng ibig sabihin upang mangutya?", ["Ironiya", "Metapora", "Alusyon", "Apostrope"], "A"],
+  ["Alin sa mga sumusunod ang *halimbawa ng sanaysay*?", ["Noli Me Tangere", "Liwanag at Dilim ni Mabini", "Biag ni Lam-ang", "Ibong Adarna"], "B"]
+];
+
+    const form = document.getElementById("quizForm");
+    const resultBox = document.getElementById("resultBox");
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.innerHTML = `<label>${index + 1}. ${q[0]}</label>`;
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      ["A", "B", "C", "D"].forEach((letter, i) => {
+        const id = `q${index + 1}${letter}`;
+        const name = `q${index + 1}`;
+        optionsDiv.innerHTML += `<input type="radio" id="${id}" name="${name}" value="${letter}"><label for="${id}">${letter}. ${q[1][i]}</label>`;
+      });
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit Quiz";
+    submitBtn.type = "button";
+    submitBtn.onclick = () => {
+      let score = 0;
+      const timeUsed = 1800 - totalTime;
+      const minutesUsed = Math.floor(timeUsed / 60);
+      const secondsUsed = timeUsed % 60;
+      const formattedTime = `${String(minutesUsed).padStart(2, '0')}:${String(secondsUsed).padStart(2, '0')}`;
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+        if (selected && selected.value === q[2]) score++;
+      });
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `Time Used: ${formattedTime}<br>You got ${score} out of ${questions.length} correct.<br><br><button onclick=\"window.location.href='EduQuiz.html'\">Go Back</button>`;
+      
+    };
+    form.appendChild(submitBtn);
+
+    let totalTime = 30 * 60;
+    const timerDisplay = document.getElementById("timer");
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timerDisplay.textContent = `Time Remaining: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      totalTime--;
+      if (totalTime < 0) {
+        clearInterval(countdown);
+        alert("Time's up! Submitting your quiz.");
+        submitBtn.click();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

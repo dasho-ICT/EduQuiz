@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Facebook-Style Login</title>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      background: #f0f2f5;
+      overflow: hidden;
+    }
+    .wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .slide-container {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+    .screen {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .account-list {
+      width: 90%;
+      max-width: 400px;
+    }
+    .account-entry {
+      background: white;
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .account-entry span {
+      flex: 1;
+      font-size: 16px;
+    }
+    .remove-btn {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      padding: 5px;
+    }
+    .dropdown {
+      position: absolute;
+      right: 10px;
+      top: 45px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      z-index: 2;
+      pointer-events: auto;
+    }
+    .dropdown button {
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+    }
+    .dropdown button:hover {
+      background: #f0f0f0;
+    }
+
+    .btn-primary {
+      width: 90%;
+      max-width: 400px;
+      padding: 15px;
+      font-size: 16px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #1877f2;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .btn-primary:hover {
+      background-color: #145dbf;
+      transform: scale(1.02);
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      max-width: 400px;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      background: white;
+    }
+
+    .password-wrapper {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+
+    #togglePassword {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #ddd;
+      margin: 20px 0;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      cursor: pointer;
+    }
+    .profile-pic::after {
+      content: '+';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      font-weight: bold;
+      color: #555;
+      border: 2px solid #ccc;
+    }
+
+    .gender-select {
+      margin: 15px 0;
+    }
+
+    .alert-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .alert-box {
+      background-color: #f44336;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      max-width: 90%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .password-popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+    }
+
+    .password-popup {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 350px;
+      position: relative;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .password-popup input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .password-popup button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .password-popup .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="slide-container" id="slider">
+      <div class="screen">
+        <div class="account-list" id="accountList"></div>
+        <button class="btn-primary" onclick="goToCreate()">Create New Account</button>
+      </div>
+
+      <div class="screen">
+        <input id="nickname" type="text" placeholder="Username" maxlength="20" />
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Password" maxlength="20" />
+          <button id="togglePassword"><i data-feather="eye"></i></button>
+        </div>
+        <button class="btn-primary" onclick="goToProfile()">Next</button>
+      </div>
+
+      <div class="screen">
+        <div class="profile-pic" id="profilePreview" onclick="document.getElementById('imageInput').click()"></div>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+        <div class="gender-select">
+          <label><input type="radio" name="gender" value="male"> Male</label>
+          <label><input type="radio" name="gender" value="female"> Female</label>
+        </div>
+        <button class="btn-primary" onclick="saveAccount()">Save and Continue</button>
+      </div>
+    </div>
+
+    <div class="alert-overlay" id="alertOverlay">
+      <div class="alert-box" id="customAlertBox"></div>
+    </div>
+  </div>
+
+  <div class="password-popup-overlay" id="passwordOverlay">
+    <div class="password-popup">
+      <button class="close-btn" onclick="closePopup()">✖</button>
+      <div>Enter password for <b id="popupUser"></b></div>
+      <input type="password" id="popupPassword" placeholder="Password">
+      <button onclick="submitPassword()">Login</button>
+      <button onclick="savePasswordAndContinue()">Save and Continue</button>
+    </div>
+  </div>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const nicknameInput = document.getElementById("nickname");
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const profilePreview = document.getElementById("profilePreview");
+    const imageInput = document.getElementById("imageInput");
+    const accountList = document.getElementById("accountList");
+    const alertOverlay = document.getElementById("alertOverlay");
+    const alertBox = document.getElementById("customAlertBox");
+    const passwordOverlay = document.getElementById("passwordOverlay");
+    const popupPassword = document.getElementById("popupPassword");
+    const popupUser = document.getElementById("popupUser");
+
+    let selectedLoginUser = "";
+
+    togglePassword.addEventListener("click", () => {
+      const isHidden = passwordInput.type === "password";
+      passwordInput.type = isHidden ? "text" : "password";
+      togglePassword.innerHTML = isHidden
+        ? '<i data-feather="eye-off"></i>'
+        : '<i data-feather="eye"></i>';
+      feather.replace();
+    });
+
+    imageInput.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          profilePreview.style.backgroundImage = url('${e.target.result}');
+          profilePreview.setAttribute('data-image', e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function showAlert(message) {
+      alertBox.textContent = message;
+      alertOverlay.style.display = "flex";
+      setTimeout(() => alertOverlay.style.display = "none", 2500);
+    }
+
+    function goToCreate() {
+      nicknameInput.value = '';
+      passwordInput.value = '';
+      slider.style.transform = "translateX(-100%)";
+    }
+
+    function goToProfile() {
+      if (!nicknameInput.value.trim() || !passwordInput.value.trim()) {
+        showAlert("Username and Password are required!");
+        return;
+      }
+      slider.style.transform = "translateX(-200%)";
+    }
+
+    function saveAccount() {
+      const nickname = nicknameInput.value.trim();
+      const password = passwordInput.value.trim();
+      const profileImage = profilePreview.getAttribute('data-image') || "";
+      const genderEl = document.querySelector("input[name='gender']:checked");
+
+      if (!genderEl) {
+        showAlert("Please select your gender.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      users[nickname] = {
+        password,
+        profileImage,
+        gender: genderEl.value
+      };
+      localStorage.setItem("users", JSON.stringify(users));
+      window.location.href = "EduQuiz.html";
+    }
+
+    function loadAccounts() {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      accountList.innerHTML = '';
+
+      for (let name in users) {
+        const div = document.createElement("div");
+        div.className = "account-entry";
+        div.innerHTML = `
+          <span onclick="login('${name}')">${name}</span>
+          <button class="remove-btn" onclick="toggleDropdown(this)">⋮</button>
+          <div class="dropdown">
+            <button onclick="removePassword('${name}')">Remove Password</button>
+            <button onclick="deleteAccount('${name}')">Remove Account</button>
+          </div>
+        `;
+        accountList.appendChild(div);
+      }
+    }
+
+    function toggleDropdown(btn) {
+      const dropdown = btn.nextElementSibling;
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+    }
+
+    function login(name) {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const user = users[name];
+
+      if (user.password) {
+        window.location.href = "EduQuiz.html";
+      } else {
+        selectedLoginUser = name;
+        popupUser.textContent = name;
+        popupPassword.value = '';
+        passwordOverlay.style.display = "flex";
+      }
+    }
+
+    function submitPassword() {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const user = users[selectedLoginUser];
+      const inputPass = popupPassword.value;
+
+      if (inputPass === user.originalPassword || inputPass === user.password) {
+        window.location.href = "EduQuiz.html";
+      } else {
+        showAlert("Incorrect password.");
+      }
+
+      closePopup();
+    }
+
+    function savePasswordAndContinue() {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      const user = users[selectedLoginUser];
+      const inputPass = popupPassword.value;
+
+      if (!inputPass) {
+        showAlert("Password cannot be empty.");
+        return;
+      }
+
+      user.password = inputPass;
+      delete user.originalPassword;
+      localStorage.setItem("users", JSON.stringify(users));
+      closePopup();
+      window.location.href = "EduQuiz.html";
+    }
+
+    function closePopup() {
+      passwordOverlay.style.display = "none";
+    }
+
+    function removePassword(name) {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      if (!users[name].originalPassword) {
+        users[name].originalPassword = users[name].password;
+      }
+      users[name].password = "";
+      localStorage.setItem("users", JSON.stringify(users));
+      loadAccounts();
+    }
+
+    function deleteAccount(name) {
+      const users = JSON.parse(localStorage.getItem("users") || "{}");
+      delete users[name];
+      localStorage.setItem("users", JSON.stringify(users));
+      loadAccounts();
+    }
+
+    loadAccounts();
+    feather.replace();
+  </script>
+</body>
+</html>

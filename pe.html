@@ -1,0 +1,169 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical Writing Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f8f1e4;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .options label {
+      background-color: #e6d3b3;
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      border-radius: 5px;
+      font-weight: normal;
+    }
+    .options input[type="radio"] {
+      display: none;
+    }
+    .options input[type="radio"]:checked + label {
+      transform: translateY(-4px);
+      background-color: #d4b78c;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      width: auto;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 20px;
+    }
+    #resultBox {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 5px;
+      padding: 20px;
+      display: none;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <h2>Technical Writing in ICT Quiz</h2>
+  <div id="timer">Time Remaining: 30:00</div>
+  <form id="quizForm"></form>
+  <div id="resultBox"></div>
+  <script> 
+   const questions = [
+      ["What does 'BMI' stand for in fitness?", ["Body Mass Index", "Body Muscle Intake", "Balanced Movement Integration", "Bone Mass Indicator"], "A"],
+      ["Which component of fitness is measured by the sit-and-reach test?", ["Muscular endurance", "Flexibility", "Cardiovascular endurance", "Strength"], "B"],
+      ["How many minutes of moderate physical activity are recommended daily for teens?", ["10 minutes", "30 minutes", "60 minutes", "90 minutes"], "C"],
+      ["What is the primary benefit of cardiovascular endurance?", ["Stronger bones", "Improved flexibility", "Better heart and lung function", "Increased reaction time"], "C"],
+      ["Which of the following is a locomotor movement?", ["Twisting", "Stretching", "Jumping", "Turning"], "C"],
+      ["In what sport is the term 'spike' commonly used?", ["Basketball", "Soccer", "Volleyball", "Badminton"], "C"],
+      ["What is the Filipino traditional dance that involves bamboo poles?", ["Maglalatik", "Tinikling", "Carinosa", "Pandanggo"], "B"],
+      ["Which of the following is NOT a health-related fitness component?", ["Agility", "Flexibility", "Muscular strength", "Body composition"], "A"],
+      ["What is agility?", ["The ability to jump high", "The ability to change direction quickly", "The ability to run long distances", "The ability to lift weights"], "B"],
+      ["What nutrient is the main source of energy for the body?", ["Protein", "Vitamins", "Carbohydrates", "Minerals"], "C"],
+      ["What does a warm-up do for the body?", ["Increases injury risk", "Cools the body", "Prepares muscles for activity", "Builds muscle mass"], "C"],
+      ["In basketball, how many players are on the court per team during play?", ["4", "5", "6", "7"], "B"],
+      ["What is the term for the ability of muscles to exert force?", ["Endurance", "Agility", "Strength", "Speed"], "C"],
+      ["Which dance originated from Spain and was adapted by Filipinos?", ["Tinikling", "Binasuan", "Carinosa", "Singkil"], "C"],
+      ["What is a non-locomotor movement?", ["Skipping", "Walking", "Bending", "Running"], "C"],
+      ["What is the target heart rate zone for moderate-intensity exercise?", ["20–40% of MHR", "40–60% of MHR", "60–85% of MHR", "90–100% of MHR"], "C"],
+      ["What does 'FITT' stand for in fitness planning?", ["Frequency, Intensity, Time, Type", "Flexibility, Intensity, Training, Time", "Frequency, Input, Total, Type", "Fast, Intense, Tiring, Tough"], "A"],
+      ["How many sets are usually played in a volleyball match?", ["1", "2", "3 out of 5", "10"], "C"],
+      ["What is a calorie?", ["A vitamin", "A unit of energy", "A mineral", "A type of fat"], "B"],
+      ["What do you call the ability to stay in control of your body position?", ["Strength", "Coordination", "Balance", "Flexibility"], "C"],
+      ["Which of the following is an example of a dynamic warm-up?", ["Arm circles", "Static stretch", "Sitting meditation", "Toe touching"], "A"],
+      ["Which team sport involves kicking a ball to score goals?", ["Basketball", "Volleyball", "Soccer", "Tennis"], "C"],
+      ["Which of the following is a skill-related fitness component?", ["Muscular strength", "Cardiovascular endurance", "Reaction time", "Flexibility"], "C"],
+      ["What does hydration help regulate in the body?", ["Brain activity", "Fat storage", "Body temperature", "Lung capacity"], "C"],
+      ["What is the name of the Filipino martial art that uses sticks or bladed weapons?", ["Karate", "Arnis", "Taekwondo", "Judo"], "B"],
+      ["What should you do after a workout to help the body recover?", ["Sprint", "Cool down", "Eat candy", "Sleep immediately"], "B"],
+      ["Which of the following best describes aerobic activity?", ["Uses heavy weights", "Short bursts of movement", "Requires oxygen over time", "Performed while sitting"], "C"],
+      ["Which sport uses a shuttlecock?", ["Tennis", "Badminton", "Baseball", "Volleyball"], "B"],
+      ["Why is good posture important?", ["It makes you taller", "It improves digestion", "It prevents injury and muscle strain", "It increases heart rate"], "C"],
+      ["What is the primary purpose of Physical Education in schools?", ["To pass time", "To promote healthy lifestyle and fitness", "To practice discipline only", "To prepare for professional sports careers"], "B"]
+    ];
+
+    const form = document.getElementById("quizForm");
+    const resultBox = document.getElementById("resultBox");
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question";
+      questionDiv.innerHTML = `<label>${index + 1}. ${q[0]}</label>`;
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      ["A", "B", "C", "D"].forEach((letter, i) => {
+        const id = `q${index + 1}${letter}`;
+        const name = `q${index + 1}`;
+        optionsDiv.innerHTML += `<input type="radio" id="${id}" name="${name}" value="${letter}"><label for="${id}">${letter}. ${q[1][i]}</label>`;
+      });
+      questionDiv.appendChild(optionsDiv);
+      form.appendChild(questionDiv);
+    });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit Quiz";
+    submitBtn.type = "button";
+    submitBtn.onclick = () => {
+      let score = 0;
+      const timeUsed = 1800 - totalTime;
+      const minutesUsed = Math.floor(timeUsed / 60);
+      const secondsUsed = timeUsed % 60;
+      const formattedTime = `${String(minutesUsed).padStart(2, '0')}:${String(secondsUsed).padStart(2, '0')}`;
+
+      questions.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index + 1}"]:checked`);
+        if (selected && selected.value === q[2]) score++;
+      });
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `Time Used: ${formattedTime}<br>You got ${score} out of ${questions.length} correct.<br><br><button onclick=\"window.location.href='EduQuiz.html'\">Go Back</button>`;
+      
+    };
+    form.appendChild(submitBtn);
+
+    let totalTime = 30 * 60;
+    const timerDisplay = document.getElementById("timer");
+    const countdown = setInterval(() => {
+      const minutes = Math.floor(totalTime / 60);
+      const seconds = totalTime % 60;
+      timerDisplay.textContent = `Time Remaining: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      totalTime--;
+      if (totalTime < 0) {
+        clearInterval(countdown);
+        alert("Time's up! Submitting your quiz.");
+        submitBtn.click();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
